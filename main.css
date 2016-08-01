@@ -1,0 +1,140 @@
+body {
+	background-color:#fafafa;
+	font-family: "Raleway", sans-serif;
+	font-size:1.5em;
+}
+
+.header, .footer {background-color:#7B68EE;}
+
+.navbar-custom .nav-justified > li > a {
+    color:#ffffff;
+}
+
+#my-name-header{
+	font-size:50px;
+}
+
+td {
+	padding:8px;
+	text-align: center;
+}
+
+.underline {
+		text-decoration:underline;
+}
+
+.resume-details-title{
+	text-align: center;
+	text-color:black;
+	font-size:16px;
+	margin-top:40px;
+}
+
+@media screen and (max-width: 600px) {
+    .low-fidelity-video {
+        width:281px;
+		height:158px;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .low-fidelity-video {
+        width:448px;
+		height:252px;
+    }
+}
+
+.endorsement-text{
+	font-size: 13px;
+}
+
+.highschool-details {
+	margin-top:60px;
+	margin-bottom:30px;
+}
+
+.paknsave-details {
+	margin-top:40px;
+}
+
+.employment-details {
+	margin-top:40px;
+}
+
+.navbar-custom .nav-justified > li> a:hover, .nav-justified > li>  a:focus, .nav-justified > li> a:active {
+    color: #ffffff;
+    background-color:transparent !important;
+}
+
+#university-classes-table{
+	margin-left:auto; 
+    margin-right:auto;
+	text-align:center;
+	margin-top:30px;
+	margin-bottom:30px;
+}
+
+.navbar-custom .navbar-nav > .active > a{
+	background-color:#7B68EE !important;
+}
+
+.navbar .nav-justified > li.open > a {
+    background-color: #7B68EE !important;
+}
+
+h1, h3, h4{
+	text-align: center;
+    color: white !important;
+	
+}
+
+h2 {
+	margin: 20px;
+	text-align: center;
+	color:#7B68EE !important;
+}
+
+.sub-title{
+	padding-top:30px;
+	padding-bottom:30px;
+}
+
+.justification {
+	padding-bottom:80px;
+}
+
+.about-me, .cv-resume, .projects, .contact{
+	padding:10px;
+}
+
+hr {
+	border-color: #7B68EE !important;
+}
+
+.contact, h4{
+	text-align: center;
+	margin-top: 10px;
+	color:#7B68EE !important; 
+}
+
+.mortar-picture{
+    max-width: 100%;
+    height: auto;
+	display: block;
+	margin: 40px 0px 20px;
+}
+
+#my-name-footer{
+	color:white !important;
+}
+
+.project-picture {
+	margin-bottom:20px;
+	max-width: 100%; 
+	height: auto;
+}
+
+.theme-color-text{
+	color:#7B68EE;
+}
+
