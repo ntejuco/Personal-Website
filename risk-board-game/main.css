@@ -1,0 +1,53 @@
+body{
+	
+}
+
+#game-board-image{
+   width: 100%;
+}
+
+.image{
+	position: relative;
+}
+
+.troop-number{
+	position: absolute;
+	font-size:30px;
+	color:black;
+	cursor: pointer; 
+}
+
+#next-phase-button{
+	float:right;
+}
+
+.hidden {display:none;}
+
+.align-right{
+	float:right;
+}
+
+.lower-ui .dropdown{
+	padding-top:10px;
+}
+
+.inline{
+	display:inline-block;
+}
+
+.info-panel-header{
+	text-align:center;
+	font-size:20px;
+}
+
+.player-headings{
+	font-size:18px;
+}
+
+.player-stats-detail{
+	
+}
+
+.player-headings{
+	text-decoration:underline;
+}
