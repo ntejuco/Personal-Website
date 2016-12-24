@@ -99,12 +99,12 @@ h2 {
 	padding-bottom:30px;
 }
 
-.justification {
-	padding-bottom:80px;
+.about-me{
+	padding:30px;
 }
 
-.about-me, .cv-resume, .projects, .contact{
-	padding:10px;
+.cv-resume, .projects, .contact{
+	padding-top: 80px;
 }
 
 hr {

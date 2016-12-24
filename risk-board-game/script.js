@@ -1,13 +1,26 @@
+var countryArray = ["west-australia","east-australia","new-guinea","indonesia","sian","india","china","mongolia",
+					"japan","irkutsk","kamchatka","yakutsk","middle-east","afghanistan","ural","siberia","south-africa",
+					"madagascar","congo","east-africa","north-africa","egypt","argentina","brazil","peru","venizuela",
+					"ukraine","southern-europe","northern-europe","scandinavia","western-europe","great-britain","iceland",
+					"central-america","eastern-united-states","quebec","greenland","western-united-states","ontario",
+					"alberta","northwest-territory","alaska"];
+					
+var blackCountries = [],
+	whiteCountries = [],
+	blueCountries = [],
+	redCountries = [],
+	yellowCountries = [],
+	greenCountries = [];
 
-
-
+var playerArray = [blackCountries,whiteCountries,blueCountries,redCountries,yellowCountries,greenCountries];
+		
 $(document).ready(function() {
     setMapAttributes();
 	getNumPlayers = true;
 	errOutput = "";
 	while (getNumPlayers == true){
-		numberOfPlayers = prompt("Please enter the number of players (2-6)" + errOutput, 3);
-		if (numberOfPlayers <= 6 && numberOfPlayers >= 2){
+		numberOfPlayers = prompt("Please enter the number of players (3-6)" + errOutput, 3);
+		if (numberOfPlayers >= 3 && numberOfPlayers <= 6){
 			getNumPlayers = false;
 			setPlayerStats(numberOfPlayers);
 		}
@@ -15,7 +28,9 @@ $(document).ready(function() {
 			errOutput = "\nPlease enter a number";
 		}
 	}
-	assignCountries(numberOfPlayers);
+	assignCountries(numberOfPlayers, countryArray);
+	assignTroops(numberOfPlayers);
+	displayTroops(numberOfPlayers);
 	$('.west-australia').click(function() {
         $('.currently-selected-country').text('West Australia');
     });
@@ -165,6 +180,7 @@ $(document).ready(function() {
 			showReinforcementsOptions();
 		}
 	});
+	$('')
 });
 
 $(window).resize(function () {
@@ -517,20 +533,94 @@ function setMapAttributes(){
 	})
 }
 
-function assignCountries(numberOfPlayers){
-	
+function assignCountries(numberOfPlayers, localCountryArray){
+	countriesPerPlayer = Math.floor((42 / numberOfPlayers));
+	leftOverCountries = 42 % numberOfPlayers;
+	remainingCountries = 42;
+	for (i = 0; i < numberOfPlayers; i++){
+		for (j = 0; j < countriesPerPlayer; j++){
+			randomNum = Math.floor(Math.random() * remainingCountries);
+			remainingCountries--;
+			playerArray[i].push([[localCountryArray[randomNum]][0],0]);
+			localCountryArray.splice(randomNum,1);
+		}
+	}
+	for (i = 0; i < remainingCountries; i++){
+		playerArray[i].push([[localCountryArray[randomNum]][0],0]);
+	}
+	for (i=0; i < numberOfPlayers; i++){
+		for (j=0; j < playerArray[i].length; j++){
+			currentCountry = document.getElementById(playerArray[i][j][0] + "-troops");
+			if (i==0){
+				currentCountry.style.color="black";
+			}
+			if (i==1){
+				currentCountry.style.color="white";
+			}
+			if (i==2){
+				currentCountry.style.color="blue";
+			}
+			if (i==3){
+				currentCountry.style.color="red";
+			}
+			if (i==4){
+				currentCountry.style.color="yellow";
+			}
+			if (i==5){
+				currentCountry.style.color="green";
+			}
+		}
+	}
+}
+
+function assignTroops(numberOfPlayers){
+	var troopsPerPlayer;
+	if (numberOfPlayers == 3){
+		troopsPerPlayer = 35;
+	}
+	else if (numberOfPlayers == 4){
+		troopsPerPlayer = 30;
+	}
+	else if (numberOfPlayers == 5){
+		troopsPerPlayer = 25;
+	}
+	else if (numberOfPlayers == 6){
+		troopsPerPlayer = 20;
+	} 
+	for (i=0; i < numberOfPlayers; i++){
+		numControlledCountries = playerArray[i].length;
+		troopsPerCountry = Math.floor(troopsPerPlayer / numControlledCountries);
+		leftOverTroops = troopsPerPlayer % numControlledCountries;
+		for (j=0; j < leftOverTroops; j++){
+			playerArray[i][j][1] += 1;
+		}
+		for (j=0; j < numControlledCountries; j++){
+			playerArray[i][j][1] += troopsPerCountry;
+		}
+	}
+}
+
+function displayTroops(numberOfPlayers){
+	for (i=0; i < numberOfPlayers; i++){
+		for (j=0; j < playerArray[i].length; j++){
+			currentCountry = playerArray[i][j][0];
+			document.getElementById(currentCountry + "-troops").innerHTML = playerArray[i][j][1];
+		}
+	}
 }
 
 function hideReinforcementsOptions(){
 	$('#reinforcement-dropdown').toggleClass("hidden");
 	$('#action-on-country-indicator-2').toggleClass("hidden");
-	$('#reinforcements-remaining-text').toggleClass("hidden");
+	$('#reinforcements-remaining-text').toggleClass("hidden"); 
+	$('#add-reinforcements-button').toggleClass("hidden");
 }
 
 function hideAttackOptions(){
 	$('#attack-dropdown-country').toggleClass("hidden");
 	$('#attack-dropdown-number').toggleClass("hidden");
 	$('#attack-option-part-2').toggleClass("hidden");
+	$('#attack-button').toggleClass("hidden");
 }
 
 function hideFortificationOptions(){
@@ -543,12 +633,14 @@ function showReinforcementsOptions(){
 	$('#reinforcement-dropdown').toggleClass("hidden");
 	$('#action-on-country-indicator-2').toggleClass("hidden");
 	$('#reinforcements-remaining-text').toggleClass("hidden");
+	$('#add-reinforcements-button').toggleClass("hidden");
 }
 
 function showAttackOptions(){
 	$('#attack-dropdown-country').toggleClass("hidden");
 	$('#attack-dropdown-number').toggleClass("hidden");
 	$('#attack-option-part-2').toggleClass("hidden");
+	$('#attack-button').toggleClass("hidden");
 }
 
 function showFortificationOptions(){
