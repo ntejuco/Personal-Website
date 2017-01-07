@@ -13,24 +13,58 @@ var blackCountries = [],
 	greenCountries = [];
 
 var playerArray = [blackCountries,whiteCountries,blueCountries,redCountries,yellowCountries,greenCountries];
-		
+
+var playerTurn = 0;
+	
 $(document).ready(function() {
-    setMapAttributes();
+	var img = document.getElementById('game-board-image');
+	$("#game-board-image").on('load',function(){
+		setMapAttributes();
+		assignCountries(numberOfPlayers, countryArray);
+		assignTroops(numberOfPlayers);
+		displayTroops(numberOfPlayers);
+		updatePlayerStats(numberOfPlayers);
+	});
 	getNumPlayers = true;
 	errOutput = "";
 	while (getNumPlayers == true){
 		numberOfPlayers = prompt("Please enter the number of players (3-6)" + errOutput, 3);
 		if (numberOfPlayers >= 3 && numberOfPlayers <= 6){
 			getNumPlayers = false;
+			numberOfPlayers = parseInt(numberOfPlayers);
 			setPlayerStats(numberOfPlayers);
 		}
 		else{
 			errOutput = "\nPlease enter a number";
 		}
 	}
-	assignCountries(numberOfPlayers, countryArray);
-	assignTroops(numberOfPlayers);
-	displayTroops(numberOfPlayers);
+	$('#black-player-elements .player-headings').toggleClass('bold');
+	$('#add-reinforcements-button').click(function(){
+		remainingTroops = parseInt(document.getElementById('reinforcements-remaining-number').innerHTML);
+		troopsToAdd = parseInt($('#reinforcements-dropdown option:selected').text());
+		selectedCountry = $('#selected-country').text();
+		if ((troopsToAdd <= remainingTroops) && (selectedCountry != "Select Country")){
+			selectedCountry = selectedCountry.replace(/\s+/g, '-').toLowerCase();
+			var i;
+			var j;
+			found = false;
+			for (i=0; i < numberOfPlayers; i++){
+				for (j=0; j < playerArray[i].length; j++){
+					if (playerArray[i][j][0] == selectedCountry){
+						found = true;
+						break;
+					}
+				}
+				if (found == true){
+					break;
+				}
+			}
+			playerArray[i][j][1] += troopsToAdd;
+			displayTroops(numberOfPlayers);
+			updatePlayerStats(numberOfPlayers);
+			document.getElementById('reinforcements-remaining-number').innerHTML = remainingTroops - troopsToAdd;
+		}
+	});	
 	$('.west-australia').click(function() {
         $('.currently-selected-country').text('West Australia');
     });
@@ -178,14 +212,46 @@ $(document).ready(function() {
 			$('#action-on-country-indicator').text("Add");
 			hideFortificationOptions();
 			showReinforcementsOptions();
+			document.getElementById('reinforcements-remaining-number').innerHTML = calculateReinforcements();
+			nextTurn(numberOfPlayers);
 		}
 	});
-	$('')
 });
 
 $(window).resize(function () {
 	setMapAttributes();
 });
+
+function nextTurn(numberOfPlayers){
+	previousTurn = playerTurn;
+	playerTurn += 1;
+	playerTurn = playerTurn % numberOfPlayers;
+	toggleBold(previousTurn);
+	toggleBold(playerTurn);
+}
+
+function toggleBold(playerNumber){
+	switch(playerNumber){
+		case(0):
+			$('#black-player-elements .player-headings').toggleClass('bold');
+			break;
+		case(1):
+			$('#white-player-elements .player-headings').toggleClass('bold');
+			break;
+		case(2):
+			$('#blue-player-elements .player-headings').toggleClass('bold');
+			break;
+		case(3):
+			$('#red-player-elements .player-headings').toggleClass('bold');
+			break;
+		case(4):
+			$('#yellow-player-elements .player-headings').toggleClass('bold');
+			break;
+		case(5):
+			$('#green-player-elements .player-headings').toggleClass('bold');
+			break;
+		}
+}
 
 function setMapAttributes(){
 	var xCoord, yCoord,
@@ -551,23 +617,25 @@ function assignCountries(numberOfPlayers, localCountryArray){
 	for (i=0; i < numberOfPlayers; i++){
 		for (j=0; j < playerArray[i].length; j++){
 			currentCountry = document.getElementById(playerArray[i][j][0] + "-troops");
-			if (i==0){
-				currentCountry.style.color="black";
-			}
-			if (i==1){
-				currentCountry.style.color="white";
-			}
-			if (i==2){
-				currentCountry.style.color="blue";
-			}
-			if (i==3){
-				currentCountry.style.color="red";
-			}
-			if (i==4){
-				currentCountry.style.color="yellow";
-			}
-			if (i==5){
-				currentCountry.style.color="green";
+			switch(i){
+				case 0:
+					currentCountry.style.color="black";
+					break;
+				case 1:
+					currentCountry.style.color="white";
+					break;
+				case 2:
+					currentCountry.style.color="blue";
+					break;
+				case 3:
+					currentCountry.style.color="red";
+					break;
+				case 4:
+					currentCountry.style.color="yellow";
+					break;
+				case 5:
+					currentCountry.style.color="green";
+					break;
 			}
 		}
 	}
@@ -575,18 +643,25 @@ function assignCountries(numberOfPlayers, localCountryArray){
 
 function assignTroops(numberOfPlayers){
 	var troopsPerPlayer;
-	if (numberOfPlayers == 3){
-		troopsPerPlayer = 35;
+	console.log(numberOfPlayers);
+	console.log(typeof numberOfPlayers);
+	switch(numberOfPlayers){
+		case 3:
+			troopsPerPlayer = 35;
+			break;
+		case 4:
+			troopsPerPlayer = 30;
+			break;
+		case 5:
+			troopsPerPlayer = 25;
+			break;
+		case 6:
+			troopsPerPlayer = 20;
+			break;
+		default:
+			console.log("t");
+			break;
 	}
-	else if (numberOfPlayers == 4){
-		troopsPerPlayer = 30;
-	}
-	else if (numberOfPlayers == 5){
-		troopsPerPlayer = 25;
-	}
-	else if (numberOfPlayers == 6){
-		troopsPerPlayer = 20;
-	} 
 	for (i=0; i < numberOfPlayers; i++){
 		numControlledCountries = playerArray[i].length;
 		troopsPerCountry = Math.floor(troopsPerPlayer / numControlledCountries);
@@ -662,4 +737,46 @@ function setPlayerStats(numberOfPlayers){
 	if (numberOfPlayers == 6){
 		$("#green-player-elements").toggleClass("hidden");
 	}
+}
+
+function updatePlayerStats(numberOfPlayers){
+	for (i=0; i < numberOfPlayers; i++){
+		currentPlayerCountries = playerArray[i].length;
+		currentPlayerTroops = 0;
+		for (j=0; j < currentPlayerCountries; j++){
+			currentPlayerTroops += playerArray[i][j][1];
+		}
+		switch(i){
+			case 0:
+				statsCountryID = document.getElementById("black-countries");
+				statsTroopsID = document.getElementById("black-troops");
+				break;
+			case 1:
+				statsCountryID = document.getElementById("white-countries");
+				statsTroopsID = document.getElementById("white-troops");
+				break;
+			case 2:
+				statsCountryID = document.getElementById("blue-countries");
+				statsTroopsID = document.getElementById("blue-troops");
+				break;
+			case 3:
+				statsCountryID = document.getElementById("red-countries");
+				statsTroopsID = document.getElementById("red-troops");
+				break;
+			case 4:
+				statsCountryID = document.getElementById("yellow-countries");
+				statsTroopsID = document.getElementById("yellow-troops");
+				break;
+			case 5:
+				statsCountryID = document.getElementById("green-countries");
+				statsTroopsID = document.getElementById("green-troops");
+				break;
+		}
+		statsCountryID.innerHTML = currentPlayerCountries;
+		statsTroopsID.innerHTML = currentPlayerTroops;
+	}
+}
+
+function calculateReinforcements(){
+	return 10;
 }
